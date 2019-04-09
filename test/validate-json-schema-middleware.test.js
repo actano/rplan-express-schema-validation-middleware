@@ -26,9 +26,8 @@ describe('validate-json-schema-middleware', () => {
 
   describe('validate request body', () => {
     async function runRoute() {
-      const openApiValidator = await OpenApiValidator('test/private.yaml')
-      const validateJSONBody = openApiValidator
-        .validateJSONBody(['/route-with-request-body', 'post'])
+      const validateJSONBody = (await OpenApiValidator('test/private.yaml'))
+        .getBodyValidationMiddleware(['/route-with-request-body', 'post'])
 
       const router = new Router()
       router.post('/route-with-request-body', validateJSONBody,
@@ -62,9 +61,10 @@ describe('validate-json-schema-middleware', () => {
 
   describe('validate request path parameters', () => {
     async function runRoute() {
-      const openApiValidator = await OpenApiValidator('test/private.yaml')
-      const validateJSONParams = openApiValidator
-        .validateJSONParams(['/route-with-path-params/:dateParam/:stringParam', 'post'])
+      const validateJSONParams = (await OpenApiValidator('test/private.yaml'))
+        .getParamsValidationMiddleware(
+          ['/route-with-path-params/:dateParam/:stringParam', 'post'],
+        )
 
       const router = new Router()
       router.post('/route-with-path-params/:dateParam/:stringParam', validateJSONParams,
@@ -97,9 +97,8 @@ describe('validate-json-schema-middleware', () => {
 
   describe('validate request query parameters', () => {
     async function runRoute() {
-      const openApiValidator = await OpenApiValidator('test/private.yaml')
-      const validateJSONQuery = openApiValidator
-        .validateJSONQuery(['/route-with-query-params', 'get'])
+      const validateJSONQuery = (await OpenApiValidator('test/private.yaml'))
+        .getQueryValidationMiddleware(['/route-with-query-params', 'get'])
 
       const router = new Router()
       router.get('/route-with-query-params', validateJSONQuery,
@@ -151,10 +150,9 @@ describe('validate-json-schema-middleware', () => {
     }
 
     async function getResponseValidator() {
-      const openApiValidator = await OpenApiValidator('test/private.yaml')
-      const responseValidator = openApiValidator
-        .responseValidator(['/route-with-response-body', 'get'])
-      return responseValidator(HttpStatus.OK)
+      return (await OpenApiValidator('test/private.yaml'))
+        .getResponseValidationEndPoint(['/route-with-response-body', 'get'])
+        .validator(HttpStatus.OK)
     }
 
     it('should validate a valid response', async () => {

@@ -37,7 +37,7 @@ const middlewareFactory = (schema, getValidator, getValidationData, path) => {
 const OpenApiValidator = async (swaggerPath) => {
   const schema = await apiSchemaBuilder.buildSchema(swaggerPath)
 
-  const validateJSONBody = path =>
+  const getBodyValidationMiddleware = path =>
     middlewareFactory(
       schema,
       getBodyValidator,
@@ -45,7 +45,7 @@ const OpenApiValidator = async (swaggerPath) => {
       path,
     )
 
-  const validateJSONParams = path =>
+  const getParamsValidationMiddleware = path =>
     middlewareFactory(
       schema,
       getParametersValidator,
@@ -53,7 +53,7 @@ const OpenApiValidator = async (swaggerPath) => {
       path,
     )
 
-  const validateJSONQuery = path =>
+  const getQueryValidationMiddleware = path =>
     middlewareFactory(
       schema,
       getParametersValidator,
@@ -62,20 +62,24 @@ const OpenApiValidator = async (swaggerPath) => {
     )
 
 
-  const responseValidator = path => (httpStatusCode) => {
+  const getResponseValidationEndPoint = (path) => {
     const swaggerEndPoint = getSwaggerEndPoint(schema, path)
     const responseEndPoint = getResponseEndPoint(swaggerEndPoint)
-    const validator = responseEndPoint[httpStatusCode]
-    ensureValidator(validator, schema, path, httpStatusCode)
-    return validator
+    return {
+      validator: (httpStatusCode) => {
+        const validator = responseEndPoint[httpStatusCode]
+        ensureValidator(validator, schema, path, httpStatusCode)
+        return validator
+      },
+    }
   }
 
 
   return {
-    validateJSONBody,
-    validateJSONParams,
-    validateJSONQuery,
-    responseValidator,
+    getBodyValidationMiddleware,
+    getParamsValidationMiddleware,
+    getQueryValidationMiddleware,
+    getResponseValidationEndPoint,
   }
 }
 
