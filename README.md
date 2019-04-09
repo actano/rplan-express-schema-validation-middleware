@@ -71,3 +71,16 @@ it('should validate response', async () => {
 })
 
 ```
+
+# Known issues
+
+The query and params validation middleware returned by 
+`getParamsValidationMiddleware` and `getQueryValidationMiddleware`
+seems to not validate types correctly, but just checking for correct 
+and required property names. 
+That seems to be a bug in the `api-schema-builder` npm module.
+See skipped tests at `./test/validate-json-schema-middleware.test.js`
+
+In opposite to that, the request and response body validators 
+returned by `getBodyValidationMiddleware` and `getResponseValidationEndPoint`
+perform a fully functional validation.
