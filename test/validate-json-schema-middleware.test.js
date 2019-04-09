@@ -207,4 +207,51 @@ describe('validate-json-schema-middleware', () => {
       expect(validator.validate({ body }), JSON.stringify(validator.errors)).to.equal(false)
     })
   })
+
+  describe('invalid filename and path', () => {
+    it('should throw an exception if swagger file do not exists', async () => {
+      try {
+        await OpenApiValidator('invalid-path/private.yaml')
+      } catch (err) {
+        return
+      }
+      expect(false, 'OpenApiValidator should throw an exception').to.equal(true)
+    })
+
+    it('should throw an exception if an endpoint does not exist', async () => {
+      const openApiValidator = await OpenApiValidator('test/private.yaml')
+
+      expect(
+        () =>
+          openApiValidator.getBodyValidationMiddleware(['/invalid-route', 'get']),
+      ).to.throw(Error)
+
+      expect(
+        () =>
+          openApiValidator.getParamsValidationMiddleware(['/invalid-route', 'get']),
+      ).to.throw(Error)
+
+      expect(
+        () =>
+          openApiValidator.getQueryValidationMiddleware(['/invalid-route', 'get']),
+      ).to.throw(Error)
+
+      expect(
+        () =>
+          openApiValidator.getResponseValidationEndPoint(['/invalid-route', 'get']),
+      ).to.throw(Error)
+    })
+
+    it('should throw an exception if the response validator does not exist', async () => {
+      const openApiValidator = await OpenApiValidator('test/private.yaml')
+      const responseValidationEndpoint = openApiValidator
+        .getResponseValidationEndPoint(['/route-with-response-body', 'get'])
+
+      const UNKNOWN_STATUS_CODE = 500
+      expect(
+        () =>
+          responseValidationEndpoint.validator(UNKNOWN_STATUS_CODE),
+      ).to.throw(Error)
+    })
+  })
 })
