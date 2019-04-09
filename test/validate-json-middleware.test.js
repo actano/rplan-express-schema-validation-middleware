@@ -3,9 +3,9 @@ import bodyParser from 'body-parser'
 import express, { Router } from 'express'
 import * as HttpStatus from 'http-status-codes'
 import request from 'supertest'
-import { buildSwaggerSchema, validatorFactory } from '../src'
+import { OpenApiValidator } from '../src'
 
-describe('validate-json-middleware', () => {
+describe('validate-json-schema-middleware', () => {
   let server
 
   async function runServer(router) {
@@ -26,10 +26,9 @@ describe('validate-json-middleware', () => {
 
   describe('validate request body', () => {
     async function runRoute() {
-      const swaggerSchema = await buildSwaggerSchema('test/private.yaml')
-      const { validateJSONBody } = validatorFactory(
-        swaggerSchema, ['/route-with-request-body', 'post'],
-      )
+      const openApiValidator = await OpenApiValidator('test/private.yaml')
+      const validateJSONBody = openApiValidator
+        .validateJSONBody(['/route-with-request-body', 'post'])
 
       const router = new Router()
       router.post('/route-with-request-body', validateJSONBody,
@@ -63,10 +62,9 @@ describe('validate-json-middleware', () => {
 
   describe('validate request path parameters', () => {
     async function runRoute() {
-      const swaggerSchema = await buildSwaggerSchema('test/private.yaml')
-      const { validateJSONParams } = validatorFactory(
-        swaggerSchema, ['/route-with-path-params/:dateParam/:stringParam', 'post'],
-      )
+      const openApiValidator = await OpenApiValidator('test/private.yaml')
+      const validateJSONParams = openApiValidator
+        .validateJSONParams(['/route-with-path-params/:dateParam/:stringParam', 'post'])
 
       const router = new Router()
       router.post('/route-with-path-params/:dateParam/:stringParam', validateJSONParams,
@@ -99,10 +97,9 @@ describe('validate-json-middleware', () => {
 
   describe('validate request query parameters', () => {
     async function runRoute() {
-      const swaggerSchema = await buildSwaggerSchema('test/private.yaml')
-      const { validateJSONQuery } = validatorFactory(
-        swaggerSchema, ['/route-with-query-params', 'get'],
-      )
+      const openApiValidator = await OpenApiValidator('test/private.yaml')
+      const validateJSONQuery = openApiValidator
+        .validateJSONQuery(['/route-with-query-params', 'get'])
 
       const router = new Router()
       router.get('/route-with-query-params', validateJSONQuery,
@@ -154,10 +151,9 @@ describe('validate-json-middleware', () => {
     }
 
     async function getResponseValidator() {
-      const swaggerSchema = await buildSwaggerSchema('test/private.yaml')
-      const { responseValidator } = validatorFactory(
-        swaggerSchema, ['/route-with-response-body', 'get'],
-      )
+      const openApiValidator = await OpenApiValidator('test/private.yaml')
+      const responseValidator = openApiValidator
+        .responseValidator(['/route-with-response-body', 'get'])
       return responseValidator(HttpStatus.OK)
     }
 

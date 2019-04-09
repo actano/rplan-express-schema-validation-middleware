@@ -1,4 +1,3 @@
 export {
-  buildSwaggerSchema,
-  validatorFactory,
+  OpenApiValidator,
 } from './validate-json-middleware'

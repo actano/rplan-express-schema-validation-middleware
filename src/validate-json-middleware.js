@@ -2,6 +2,10 @@ import apiSchemaBuilder from 'api-schema-builder'
 import * as HttpStatus from 'http-status-codes'
 import get from 'lodash/get'
 
+const getBodyValidator = swaggerEndPoint => swaggerEndPoint.body
+const getParametersValidator = swaggerEndPoint => swaggerEndPoint.parameters
+const getResponseEndPoint = swaggerEndPoint => swaggerEndPoint.responses
+
 const getSwaggerEndPoint = (schema, path) => {
   const swaggerEndPoint = get(schema, path)
   if (!swaggerEndPoint) {
@@ -10,42 +14,62 @@ const getSwaggerEndPoint = (schema, path) => {
   return swaggerEndPoint
 }
 
-const buildSwaggerSchema = async swaggerPath =>
-  apiSchemaBuilder.buildSchema(swaggerPath)
+const ensureValidator = (validator, schema, ...path) => {
+  if (typeof validator.validate !== 'function') {
+    throw new Error(`validator not found at path '${path.join(',')}' in schema '${JSON.stringify(schema)}'`)
+  }
+}
 
-const validatorFactory = (swaggerSchema, path) => {
-  const swaggerEndPoint = getSwaggerEndPoint(swaggerSchema, path)
-
-  const bodyValidator = swaggerEndPoint.body
-  const parametersValidator = swaggerEndPoint.parameters
-  const responseEndPoint = swaggerEndPoint.responses
-
-  const validateJSONBody = (req, res, next) => {
-    if (!bodyValidator.validate(req.body)) {
-      res.status(HttpStatus.BAD_REQUEST).json(bodyValidator.errors)
+const middlewareFactory = (schema, getValidator, getValidationData, path) => {
+  const swaggerEndPoint = getSwaggerEndPoint(schema, path)
+  const validator = getValidator(swaggerEndPoint)
+  ensureValidator(validator, schema, path)
+  return (req, res, next) => {
+    if (!validator.validate(getValidationData(req))) {
+      res.status(HttpStatus.BAD_REQUEST).json(validator.errors)
       return
     }
     next()
   }
+}
 
-  const validateJSONParams = (req, res, next) => {
-    if (!parametersValidator.validate({ path: req.params })) {
-      res.status(HttpStatus.BAD_REQUEST).json(parametersValidator.errors)
-      return
-    }
-    next()
+
+const OpenApiValidator = async (swaggerPath) => {
+  const schema = await apiSchemaBuilder.buildSchema(swaggerPath)
+
+  const validateJSONBody = path =>
+    middlewareFactory(
+      schema,
+      getBodyValidator,
+      req => req.body,
+      path,
+    )
+
+  const validateJSONParams = path =>
+    middlewareFactory(
+      schema,
+      getParametersValidator,
+      req => ({ path: req.params }),
+      path,
+    )
+
+  const validateJSONQuery = path =>
+    middlewareFactory(
+      schema,
+      getParametersValidator,
+      req => ({ query: req.query }),
+      path,
+    )
+
+
+  const responseValidator = path => (httpStatusCode) => {
+    const swaggerEndPoint = getSwaggerEndPoint(schema, path)
+    const responseEndPoint = getResponseEndPoint(swaggerEndPoint)
+    const validator = responseEndPoint[httpStatusCode]
+    ensureValidator(validator, schema, path, httpStatusCode)
+    return validator
   }
 
-  const validateJSONQuery = (req, res, next) => {
-    if (!parametersValidator.validate({ query: req.query })) {
-      res.status(HttpStatus.BAD_REQUEST).json(parametersValidator.errors)
-      return
-    }
-    next()
-  }
-
-  const responseValidator = httpStatusCode =>
-    responseEndPoint[httpStatusCode]
 
   return {
     validateJSONBody,
@@ -56,6 +80,5 @@ const validatorFactory = (swaggerSchema, path) => {
 }
 
 export {
-  buildSwaggerSchema,
-  validatorFactory,
+  OpenApiValidator,
 }
