@@ -1,3 +1,3 @@
 export {
   OpenApiValidator,
-} from './validate-json-middleware'
+} from './validate-json-schema-middleware'
