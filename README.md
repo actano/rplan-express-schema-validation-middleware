@@ -20,17 +20,13 @@ request body against the schema specified in `docs/private.yaml`
 
 ```javascript
 import {
-  buildSwaggerSchema,
-  validatorFactory,
+  OpenApiValidator,
 } from '@rplan/express-schema-validation-middleware'
 
 export async function createRestRoute() {
-  const swaggerSchema = await buildSwaggerSchema('docs/private.yaml')
-
-  const { validateJSONBody } = validatorFactory(
-    swaggerSchema,
-    ['/my-route', 'post'],
-  )
+  const openApiValidator = await OpenApiValidator('docs/private.yaml')
+  const validateJSONBody = openApiValidator
+    .getBodyValidationMiddleware(['/my-route', 'post'])
 
   const router = new Router()
 
@@ -53,14 +49,13 @@ export async function createRestRoute() {
 ```javascript
 
 async function getResponseValidator(httpStatusCode) {
-  const swaggerSchema = await buildSwaggerSchema('docs/private.yaml')
+  const openApiValidator = await OpenApiValidator('docs/private.yaml')
+  
+  const responseValidator = openApiValidator
+      .getResponseValidationEndPoint(['/my-route', 'post'])
+      .validator(httpStatusCode)
 
-  const { responseValidator } = await validatorFactory(
-    swaggerSchema,
-    ['/my-route', 'post'],
-  )
-
-  return responseValidator(httpStatusCode)
+  return responseValidator
 }
 
 // ...
