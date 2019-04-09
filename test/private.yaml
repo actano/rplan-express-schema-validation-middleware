@@ -1,0 +1,83 @@
+openapi: "3.0.0"
+info:
+  version: 0.0.1
+  title: Test Api Spec
+
+paths:
+  /route-with-request-body:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - validRequiredProperty
+              properties:
+                validRequiredProperty:
+                  type: string
+      responses:
+        201:
+          description: "Created"
+        400:
+          description: "Invalid request body"
+
+  /route-with-path-params/{dateParam}/{stringParam}:
+    parameters:
+      - name: dateParam
+        in: path
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: stringParam
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      responses:
+        201:
+          description: "Created"
+        400:
+          description: "Invalid request body"
+
+  /route-with-query-params:
+    parameters:
+      - name: dateParam
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: stringParam
+        in: query
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        200:
+          description: "OK"
+        400:
+          description: "Invalid request body"
+
+  /route-with-response-body:
+    get:
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                  - dateProp
+                properties:
+                  dateProp:
+                    type: string
+                    format: date
+                  numberProp:
+                    type: number

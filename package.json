@@ -1,0 +1,46 @@
+{
+  "name": "@rplan/express-rschema-validation-middleware",
+  "version": "0.0.1",
+  "author": "Actano GmbH (https://rplan.com/)",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "module": "src/index.js",
+  "engines": {
+    "node": ">=8"
+  },
+  "scripts": {
+    "build": "babel --out-dir lib src",
+    "ci": "npm run lint && npm run test",
+    "clean": "npm run clean:lib",
+    "clean:lib": "rm -rf lib",
+    "lint": "eslint src",
+    "prepublishOnly": "npm run clean && npm run ci && npm run build",
+    "test": "mocha test"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/register": "^7.4.0",
+    "body-parser": "^1.18.3",
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-actano-base": "^4.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "express": "^4.16.4",
+    "mocha": "^6.0.2",
+    "supertest": "^4.0.2"
+  },
+  "dependencies": {
+    "api-schema-builder": "^1.0.7",
+    "http-status-codes": "^1.3.2",
+    "lodash": "^4.17.11"
+  }
+}

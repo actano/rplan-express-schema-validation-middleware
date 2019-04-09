@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+- '8'
+cache: yarn
+script:
+- npm run ci
+deploy:
+  provider: npm
+  skip_cleanup: true
+  email: rplan-ci@actano.de
+  on:
+    tags: true
+    repo: actano/rplan-express-schema-validation-middleware
+    node: '8'
+  api_key:
+    secure: ZLl9cPkCyvH0tXPv6+i4u3FcPbZrQiUJ8CKrOZtLw+oVrerz40IjcDI8l/3AYmPXqwc+7psZvBOZhd3o8vnrmT40j7vVIh3fbFGJqkTa6U8XcbKBFl6xmirLQ7mJwMHt9WRzGwRH5uchMU8YbsuY88J82HNPwf0uxI/3Plfy+N86VEcMjiyGZGQCiQySGSK0hDrGYoF30W2GFd+5dpyH+HFJ5k9FYXHjt2j2Ioo2uWOqnKYYueavFBeDUXESaBy3Sfr+3d6WZm3TpH9blLsYnMEhfDQ8E0Q3G6eJJOdGwDO+hYj7neL/Z0e+i++hzpMGLIqoyoLGuSaYapFML94puUmksyV7MKRnCxI1VHV0k6gwOLe/q0CZJFE2E2fSGcBGJe/ZAJ2m3DDF/4W5HET5Dm3pJdDg3rAUrhUwMxl6uX1QOiHNf2Pp1B4KvrwPH5tWz8lFMsl4FfAg43m8D+w6adLL34m45xbFSv/G6lN1GE8jh5iJz9r41nH93uKSz0yFom9U+6A3AI/5jIieaDKqXkdlZdgKv8PNWIeEcVKxrXVe37KEuI3z+WgQKq5207HMPHkep0b5wgG4nuoTOLQQh+Of7DTn/1Rt5qcgQa6SFxPcVzlIZElEzCZ10YX50GM6C9Xt7GbYfhxBtVyR61LmFPUaFFvdzg4UVJwq2XAXn1U=
+env:
+  global:
+    secure: dMS/6JYOnFc5gpUtq6nM0Xf7RsGV0oCyok+1u+et/1X9iCG0c6GLyuf00jq7AJDOb8cvsUViVG0qWdDIq3gvrgxaQ6qYAX8+QwyeQO7EZKqS6iRhRe3aBVQP6OUnv82nRmdFMviN4YTP6J7Fk9zXl7GtqrCDqt/zd6ov4jNaWypxUMhmbAzuQz396cO25IbXROFs9kLR4CoO8zJicbvkM6ODQG75lC5XSD5XSq3Xr0tHTZUEpC8ldZo72QexncHNk+njTAlRdXQS/EP+vnjrOjbLocylLzHLmw4Q/o/uJohPL2loZWa2PoEEeuktwsGuujNFq4CFZbYIj168sQYFDx52ILrRebhiHRGBTuxrW0e3+KRQXFi41pIQTQjO6Gpk1mfT/lvr1fd0/czK/islkUEo/W1+1PkdcIWvB65kXsxFKNfF0qhOz/ElZDodJCqEsBl3MMm0r5ilD0t+6HpJN5ME0dbwsNbgtbv+xUBxEyi+T2ypepILyPi+uiY4VuIUGChcbax6skNq+2B4+lAGVZ99td3JnaU0WDRBikL4o2TjiZERq6Lngq9hWo9S8MVSWyJXFP9Xrd+j88MjqJNAa1BVYjPXrGXr+Clg4jL8uyZ5+r6jUvI7C5zzaWJO1DoVThKWJvkjGr2tMdi2eZ/e4TULS/QO2XMEociWlTrGKAE=

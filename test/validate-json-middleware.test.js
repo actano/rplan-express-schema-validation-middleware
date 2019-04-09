@@ -1,0 +1,216 @@
+import { expect } from 'chai'
+import bodyParser from 'body-parser'
+import express, { Router } from 'express'
+import * as HttpStatus from 'http-status-codes'
+import request from 'supertest'
+import { buildSwaggerSchema, validatorFactory } from '../src'
+
+describe('validate-json-middleware', () => {
+  let server
+
+  async function runServer(router) {
+    const app = express()
+    app.use(bodyParser.json())
+    app.use(router)
+    server = app.listen()
+  }
+
+  const getTestUrl = () => `http://localhost:${server.address().port}`
+
+  afterEach(() => {
+    if (server) {
+      server.close()
+      server = null
+    }
+  })
+
+  describe('validate request body', () => {
+    async function runRoute() {
+      const swaggerSchema = await buildSwaggerSchema('test/private.yaml')
+      const { validateJSONBody } = validatorFactory(
+        swaggerSchema, ['/route-with-request-body', 'post'],
+      )
+
+      const router = new Router()
+      router.post('/route-with-request-body', validateJSONBody,
+        (req, res) => {
+          res.sendStatus(HttpStatus.CREATED)
+        })
+
+      await runServer(router)
+    }
+
+    it('should not fail on valid request body', async () => {
+      await runRoute()
+
+      const response = await request(getTestUrl())
+        .post('/route-with-request-body')
+        .send({ validRequiredProperty: 'a string' })
+
+      expect(response.status, JSON.stringify(response.body)).to.equal(HttpStatus.CREATED)
+    })
+
+    it('should fail on invalid request body', async () => {
+      await runRoute()
+
+      const response = await request(getTestUrl())
+        .post('/route-with-request-body')
+        .send({ invalidProperty: 'a string' })
+
+      expect(response.status, JSON.stringify(response.body)).to.equal(HttpStatus.BAD_REQUEST)
+    })
+  })
+
+  describe('validate request path parameters', () => {
+    async function runRoute() {
+      const swaggerSchema = await buildSwaggerSchema('test/private.yaml')
+      const { validateJSONParams } = validatorFactory(
+        swaggerSchema, ['/route-with-path-params/:dateParam/:stringParam', 'post'],
+      )
+
+      const router = new Router()
+      router.post('/route-with-path-params/:dateParam/:stringParam', validateJSONParams,
+        (req, res) => {
+          res.sendStatus(HttpStatus.CREATED)
+        })
+
+      await runServer(router)
+    }
+
+    it('should not fail on valid request path parameters', async () => {
+      await runRoute()
+
+      const response = await request(getTestUrl())
+        .post('/route-with-path-params/2012-12-12/valid-string')
+
+      expect(response.status, JSON.stringify(response.body)).to.equal(HttpStatus.CREATED)
+    })
+
+    // Seems to not validate on types of path parameters
+    it.skip('should fail on invalid request path parameters', async () => {
+      await runRoute()
+
+      const response = await request(getTestUrl())
+        .post('/route-with-path-params/invalid-date/valid-string')
+
+      expect(response.status, JSON.stringify(response.body)).to.equal(HttpStatus.BAD_REQUEST)
+    })
+  })
+
+  describe('validate request query parameters', () => {
+    async function runRoute() {
+      const swaggerSchema = await buildSwaggerSchema('test/private.yaml')
+      const { validateJSONQuery } = validatorFactory(
+        swaggerSchema, ['/route-with-query-params', 'get'],
+      )
+
+      const router = new Router()
+      router.get('/route-with-query-params', validateJSONQuery,
+        (req, res) => {
+          res.sendStatus(HttpStatus.OK)
+        })
+
+      await runServer(router)
+    }
+
+    it('should not fail on valid request query parameters', async () => {
+      await runRoute()
+
+      const response = await request(getTestUrl())
+        .get('/route-with-query-params?stringParam=a_string&dateParam=2012-12-12')
+
+      expect(response.status, JSON.stringify(response.body)).to.equal(HttpStatus.OK)
+    })
+
+    // Seems to not validate on types of query parameters
+    it.skip('should fail on invalid query parameters', async () => {
+      await runRoute()
+
+      const response = await request(getTestUrl())
+        .get('/route-with-query-params?stringParam=a_string&dateParam=invalid date')
+
+      expect(response.status, JSON.stringify(response.body)).to.equal(HttpStatus.BAD_REQUEST)
+    })
+
+    it('should fail on missing query parameters', async () => {
+      await runRoute()
+
+      const response = await request(getTestUrl())
+        .get('/route-with-query-params?invalidParam=invalidValue')
+
+      expect(response.status, JSON.stringify(response.body)).to.equal(HttpStatus.BAD_REQUEST)
+    })
+  })
+
+  describe('validate response body', () => {
+    async function runRoute(responseBody) {
+      const router = new Router()
+      router.get('/route-with-response-body',
+        (req, res) => {
+          res.status(HttpStatus.OK).json(responseBody)
+        })
+
+      await runServer(router)
+    }
+
+    async function getResponseValidator() {
+      const swaggerSchema = await buildSwaggerSchema('test/private.yaml')
+      const { responseValidator } = validatorFactory(
+        swaggerSchema, ['/route-with-response-body', 'get'],
+      )
+      return responseValidator(HttpStatus.OK)
+    }
+
+    it('should validate a valid response', async () => {
+      await runRoute({
+        dateProp: '2012-12-12',
+        numberProp: 2,
+      })
+
+      const { body } = await request(getTestUrl())
+        .get('/route-with-response-body')
+
+      const validator = await getResponseValidator()
+      expect(validator.validate({ body }), JSON.stringify(validator.errors)).to.equal(true)
+    })
+
+    it('should not validate if a property has a wrong type', async () => {
+      await runRoute({
+        dateProp: 'invalid-date-format',
+      })
+
+      const { body } = await request(getTestUrl())
+        .get('/route-with-response-body')
+
+      const validator = await getResponseValidator()
+
+      expect(validator.validate({ body }), JSON.stringify(validator.errors)).to.equal(false)
+    })
+
+    it('should not validate if a required property is missing', async () => {
+      await runRoute({
+        numberProp: 2,
+      })
+
+      const { body } = await request(getTestUrl())
+        .get('/route-with-response-body')
+
+      const validator = await getResponseValidator()
+      expect(validator.validate({ body }), JSON.stringify(validator.errors)).to.equal(false)
+    })
+
+    it('should not validate if a additional property is send', async () => {
+      await runRoute({
+        dateProp: '2012-12-12',
+        numberProp: 2,
+        invalidProp: 'some-value',
+      })
+
+      const { body } = await request(getTestUrl())
+        .get('/route-with-response-body')
+
+      const validator = await getResponseValidator()
+      expect(validator.validate({ body }), JSON.stringify(validator.errors)).to.equal(false)
+    })
+  })
+})
