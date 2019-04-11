@@ -34,8 +34,8 @@ const middlewareFactory = (schema, getValidator, getValidationData, path) => {
 }
 
 
-const OpenApiValidator = async (swaggerPath) => {
-  const schema = await apiSchemaBuilder.buildSchema(swaggerPath)
+const OpenApiValidator = async (swaggerPath, options) => {
+  const schema = await apiSchemaBuilder.buildSchema(swaggerPath, options)
 
   const getBodyValidationMiddleware = path =>
     middlewareFactory(
