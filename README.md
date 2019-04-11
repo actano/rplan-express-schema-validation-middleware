@@ -80,6 +80,7 @@ seems to not validate types correctly, but just checking for correct
 and required property names. 
 That seems to be a bug in the `api-schema-builder` npm module.
 See skipped tests at `./test/validate-json-schema-middleware.test.js`
+and https://github.com/Zooz/api-schema-builder/pull/14
 
 In opposite to that, the request and response body validators 
 returned by `getBodyValidationMiddleware` and `getResponseValidationEndPoint`
