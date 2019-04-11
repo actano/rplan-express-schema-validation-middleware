@@ -1,4 +1,6 @@
-@rplan/express-schema-validation-middleware
+[![Build Status](https://travis-ci.org/actano/rplan-express-schema-validation-middleware.svg?branch=master)](https://travis-ci.org/actano/rplan-express-schema-validation-middleware)
+
+rplan/express-schema-validation-middleware
 ===========================================
 
 # Introduction
