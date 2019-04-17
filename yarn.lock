@@ -720,10 +720,10 @@ anymatch@^2.0.0:
     micromatch "^3.1.4"
     normalize-path "^2.1.1"
 
-api-schema-builder@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/api-schema-builder/-/api-schema-builder-1.0.7.tgz#d5636b6d8011c87f5112a5236c22ded02cc044de"
-  integrity sha512-gmC08iHxwm40GzaEXMrz7y2lZINd3FBL0PWp1NM5sF2E77bnw1QK5a2vsl/rf8XNqUEeMUeloOjY2aVKny5qBQ==
+api-schema-builder@1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/api-schema-builder/-/api-schema-builder-1.0.9.tgz#6423e460fdcc2538c774c87460c6de4ac3f34948"
+  integrity sha512-sVO1wPtzDxNca2C5zlacjTnZobJVCPZrZ8v4UmzUCNHTGa0Ii0A3m9VKb0QTmAgbklrPphkTdkWWvBLZ+l5eqQ==
   dependencies:
     ajv "^6.6.2"
     clone-deep "^4.0.1"
@@ -3379,9 +3379,9 @@ setprototypeof@1.1.0:
   integrity sha512-BvE/TwpZX4FXExxOxZyRGQQv651MSwmWKZGqvmPcRIjDqWub67kTKuIMx43cZZrS/cBBzwBcNDWoFxt2XEFIpQ==
 
 shallow-clone@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/shallow-clone/-/shallow-clone-3.0.0.tgz#317b701facce5e742d4c04c64e1d52f957e22b28"
-  integrity sha512-Drg+nOI+ofeuslBf0nulyWLZhK1BZprqNvPJaiB4VvES+9gC6GG+qOVAfuO12zVSgxq9SKevcme7S3uDT6Be8w==
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/shallow-clone/-/shallow-clone-3.0.1.tgz#8f2981ad92531f55035b01fb230769a40e02efa3"
+  integrity sha512-/6KqX+GVUdqPuPPd2LxDDxzX6CAbjJehAAOKlNpqqUpAqPM6HeL8f+o3a+JsyGjn2lv0WY8UsTgUJjU9Ok55NA==
   dependencies:
     kind-of "^6.0.2"
 
