@@ -8,6 +8,10 @@
   "engines": {
     "node": ">=8"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/actano/rplan-express-schema-validation-middleware.git"
+  },
   "scripts": {
     "build": "babel --out-dir lib src",
     "ci": "npm run lint && npm run test",
