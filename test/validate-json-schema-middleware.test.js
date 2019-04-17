@@ -84,8 +84,7 @@ describe('validate-json-schema-middleware', () => {
       expect(response.status, JSON.stringify(response.body)).to.equal(HttpStatus.CREATED)
     })
 
-    // Seems to not validate on types of path parameters
-    it.skip('should fail on invalid request path parameters', async () => {
+    it('should fail on invalid request path parameters', async () => {
       await runRoute()
 
       const response = await request(getTestUrl())
@@ -118,8 +117,7 @@ describe('validate-json-schema-middleware', () => {
       expect(response.status, JSON.stringify(response.body)).to.equal(HttpStatus.OK)
     })
 
-    // Seems to not validate on types of query parameters
-    it.skip('should fail on invalid query parameters', async () => {
+    it('should fail on invalid query parameters', async () => {
       await runRoute()
 
       const response = await request(getTestUrl())
