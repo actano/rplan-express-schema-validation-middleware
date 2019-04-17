@@ -4,7 +4,7 @@ import get from 'lodash/get'
 
 const getBodyValidator = swaggerEndPoint => swaggerEndPoint.body
 const getParametersValidator = swaggerEndPoint => swaggerEndPoint.parameters
-const getResponseEndPoint = swaggerEndPoint => swaggerEndPoint.responses
+const getResponseValidator = swaggerEndPoint => swaggerEndPoint.responses
 
 const getSwaggerEndPoint = (schema, path) => {
   const swaggerEndPoint = get(schema, path)
@@ -64,10 +64,13 @@ const OpenApiValidator = async (swaggerPath, options) => {
 
   const getResponseValidationEndPoint = (path) => {
     const swaggerEndPoint = getSwaggerEndPoint(schema, path)
-    const responseEndPoint = getResponseEndPoint(swaggerEndPoint)
+    const responseValidators = getResponseValidator(swaggerEndPoint)
     return {
       validator: (httpStatusCode) => {
-        const validator = responseEndPoint[httpStatusCode]
+        const validator = responseValidators[httpStatusCode]
+        if (validator == null) {
+          throw new Error(`validator not found at path '${path.join(',')}'. Have you defined a response body or header?`)
+        }
         ensureValidator(validator, schema, path, httpStatusCode)
         return validator
       },
