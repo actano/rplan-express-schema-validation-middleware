@@ -9,21 +9,21 @@ const getResponseEndPoint = swaggerEndPoint => swaggerEndPoint.responses
 const getSwaggerEndPoint = (schema, path) => {
   const swaggerEndPoint = get(schema, path)
   if (!swaggerEndPoint) {
-    throw new Error(`path '${path.join(',')}' not found in schema ${JSON.stringify(schema)}`)
+    throw new Error(`missing schema definition on path '${path.join(',')}'`)
   }
   return swaggerEndPoint
 }
 
-const ensureValidator = (validator, schema, ...path) => {
+const ensureValidator = (validator, ...path) => {
   if (!validator || typeof validator.validate !== 'function') {
-    throw new Error(`validator not found at path '${path.join(',')}' in schema '${JSON.stringify(schema)}'`)
+    throw new Error(`missing schema definition on path '${path.join(',')}'`)
   }
 }
 
 const middlewareFactory = (schema, getValidator, getValidationData, path) => {
   const swaggerEndPoint = getSwaggerEndPoint(schema, path)
   const validator = getValidator(swaggerEndPoint)
-  ensureValidator(validator, schema, path)
+  ensureValidator(validator, path)
   return (req, res, next) => {
     if (!validator.validate(getValidationData(req))) {
       res.status(HttpStatus.BAD_REQUEST).json(validator.errors)
@@ -68,7 +68,7 @@ const OpenApiValidator = async (swaggerPath, options) => {
     return {
       validator: (httpStatusCode) => {
         const validator = responseEndPoint[httpStatusCode]
-        ensureValidator(validator, schema, path, httpStatusCode)
+        ensureValidator(validator, path, httpStatusCode)
         return validator
       },
     }
