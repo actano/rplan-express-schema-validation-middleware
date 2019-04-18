@@ -1,7 +1,8 @@
-[![Build Status](https://travis-ci.org/actano/rplan-express-schema-validation-middleware.svg?branch=master)](https://travis-ci.org/actano/rplan-express-schema-validation-middleware)
-
 rplan/express-schema-validation-middleware
 ===========================================
+
+[![Build Status](https://travis-ci.org/actano/rplan-express-schema-validation-middleware.svg?branch=master)](https://travis-ci.org/actano/rplan-express-schema-validation-middleware)
+[![npm](https://img.shields.io/npm/v/@rplan/express-schema-validation-middleware.svg)](https://www.npmjs.com/package/@rplan/express-schema-validation-middleware)
 
 # Introduction
 
