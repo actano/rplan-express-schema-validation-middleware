@@ -15,7 +15,7 @@ const getSwaggerEndPoint = (schema, path) => {
 }
 
 const ensureValidator = (validator, schema, ...path) => {
-  if (typeof validator.validate !== 'function') {
+  if (!validator || typeof validator.validate !== 'function') {
     throw new Error(`validator not found at path '${path.join(',')}' in schema '${JSON.stringify(schema)}'`)
   }
 }
