@@ -136,6 +136,50 @@ describe('validate-json-schema-middleware', () => {
     })
   })
 
+  describe('validate request headers', () => {
+    async function runRoute() {
+      const validateHeaders = (await OpenApiValidator('test/private.yaml'))
+        .getHeaderValidationMiddleware(['/route-with-header', 'get'])
+
+      const router = new Router()
+      router.get('/route-with-header', validateHeaders,
+        (req, res) => {
+          res.sendStatus(HttpStatus.OK)
+        })
+
+      await runServer(router)
+    }
+
+    it('should not fail on valid request headers', async () => {
+      await runRoute()
+
+      const response = await request(getTestUrl())
+        .get('/route-with-header')
+        .set('x-date-header', '2012-12-12')
+
+      expect(response.status, JSON.stringify(response.body)).to.equal(HttpStatus.OK)
+    })
+
+    it('should not fail on invalid request headers', async () => {
+      await runRoute()
+
+      const response = await request(getTestUrl())
+        .get('/route-with-header')
+        .set('x-date-header', 'invalid date')
+
+      expect(response.status, JSON.stringify(response.body)).to.equal(HttpStatus.BAD_REQUEST)
+    })
+
+    it('should not fail on missing request headers', async () => {
+      await runRoute()
+
+      const response = await request(getTestUrl())
+        .get('/route-with-header')
+
+      expect(response.status, JSON.stringify(response.body)).to.equal(HttpStatus.BAD_REQUEST)
+    })
+  })
+
   describe('validate response body', () => {
     async function runRoute(responseBody) {
       const router = new Router()

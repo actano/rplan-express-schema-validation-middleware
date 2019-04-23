@@ -61,6 +61,13 @@ const OpenApiValidator = async (swaggerPath, options) => {
       path,
     )
 
+  const getHeaderValidationMiddleware = path =>
+    middlewareFactory(
+      schema,
+      getParametersValidator,
+      req => ({ headers: req.headers }),
+      path,
+    )
 
   const getResponseValidationEndPoint = (path) => {
     const swaggerEndPoint = getSwaggerEndPoint(schema, path)
@@ -79,6 +86,7 @@ const OpenApiValidator = async (swaggerPath, options) => {
     getBodyValidationMiddleware,
     getParamsValidationMiddleware,
     getQueryValidationMiddleware,
+    getHeaderValidationMiddleware,
     getResponseValidationEndPoint,
   }
 }

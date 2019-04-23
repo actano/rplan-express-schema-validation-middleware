@@ -63,6 +63,21 @@ paths:
         400:
           description: "Invalid request body"
 
+  /route-with-header:
+    parameters:
+      - name: x-date-header
+        in: header
+        required: true
+        schema:
+          type: string
+          format: date
+    get:
+      responses:
+        200:
+          description: "OK"
+        400:
+          description: "Invalid headers"
+
   /route-with-response-body:
     get:
       responses:
