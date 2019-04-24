@@ -160,7 +160,7 @@ describe('validate-json-schema-middleware', () => {
       expect(response.status, JSON.stringify(response.body)).to.equal(HttpStatus.OK)
     })
 
-    it('should not fail on invalid request headers', async () => {
+    it('should fail on invalid request headers', async () => {
       await runRoute()
 
       const response = await request(getTestUrl())
@@ -170,7 +170,7 @@ describe('validate-json-schema-middleware', () => {
       expect(response.status, JSON.stringify(response.body)).to.equal(HttpStatus.BAD_REQUEST)
     })
 
-    it('should not fail on missing request headers', async () => {
+    it('should fail on missing request headers', async () => {
       await runRoute()
 
       const response = await request(getTestUrl())
