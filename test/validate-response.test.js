@@ -1,4 +1,3 @@
-import { expect } from 'chai'
 import bodyParser from 'body-parser'
 import express, { Router } from 'express'
 import * as HttpStatus from 'http-status-codes'
