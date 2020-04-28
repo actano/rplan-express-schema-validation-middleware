@@ -2,7 +2,8 @@ import bodyParser from 'body-parser'
 import express, { Router } from 'express'
 import * as HttpStatus from 'http-status-codes'
 import request from 'supertest'
-import {OpenApiValidator, validateResponse} from '../src'
+import { OpenApiValidator } from '../src'
+import { validateResponse } from '../src/validate-response'
 
 describe('validate-json-schema-middleware', () => {
   let server
