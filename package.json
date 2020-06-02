@@ -23,16 +23,19 @@
   },
   "files": [
     "lib",
-    "src"
+    "src",
+    "index.d.ts"
   ],
+  "types": "index.d.ts",
   "publishConfig": {
     "access": "public"
   },
   "devDependencies": {
-    "@babel/cli": "^7.4.3",
-    "@babel/core": "^7.4.3",
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
     "@babel/preset-env": "^7.4.3",
     "@babel/register": "^7.4.0",
+    "@types/express": "^4.17.6",
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "eslint": "^5.16.0",
