@@ -6,10 +6,10 @@ declare module "@rplan/express-schema-validation-middleware" {
   type Params = ParamsDictionary | ParamsArray;
 
   export interface OpenApiValidatorFactoryResult<P extends Params = ParamsDictionary, ResBody = any, ReqBody = any> {
-    getBodyValidationMiddleware: (path: string[]) => Express.RequestHandler<Params, ReqBody, ResBody>,
-    getParamsValidationMiddleware: (path: string[]) => Express.RequestHandler<Params, ReqBody, ResBody>,
-    getQueryValidationMiddleware: (path: string[]) => Express.RequestHandler<Params, ReqBody, ResBody>,
-    getHeaderValidationMiddleware: (path: string[]) => Express.RequestHandler<Params, ReqBody, ResBody>,
+    getBodyValidationMiddleware: (path: string[]) => Express.RequestHandler<P, ReqBody, ResBody>,
+    getParamsValidationMiddleware: (path: string[]) => Express.RequestHandler<P, ReqBody, ResBody>,
+    getQueryValidationMiddleware: (path: string[]) => Express.RequestHandler<P, ReqBody, ResBody>,
+    getHeaderValidationMiddleware: (path: string[]) => Express.RequestHandler<P, ReqBody, ResBody>,
     getResponseValidationEndPoint: (path: string[]) => {
       validator: (httpCode: string) => {
         validate: (res: Express.Response) => boolean,
@@ -21,5 +21,5 @@ declare module "@rplan/express-schema-validation-middleware" {
   export function OpenApiValidator<P extends Params = ParamsDictionary, ResBody = any, ReqBody = any>(
     filePath: string,
     options?: { [key: string]: any },
-  ): OpenApiValidatorFactoryResult<Params, ReqBody, ResBody>
+  ): OpenApiValidatorFactoryResult<P, ReqBody, ResBody>
 }
