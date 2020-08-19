@@ -96,3 +96,27 @@ paths:
                     format: date
                   numberProp:
                     type: number
+
+  /route-with-integer-response-body:
+    get:
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                  - integer
+                  - integer32
+                  - integer64
+                properties:
+                  integer:
+                    type: integer
+                  integer32:
+                    type: integer
+                    format: int32
+                  integer64:
+                    type: integer
+                    format: int64

@@ -1,6 +1,7 @@
 import apiSchemaBuilder from 'api-schema-builder'
 import * as HttpStatus from 'http-status-codes'
 import get from 'lodash/get'
+import validators from './openapi/validators'
 
 const getBodyValidator = swaggerEndPoint => swaggerEndPoint.body
 const getParametersValidator = swaggerEndPoint => swaggerEndPoint.parameters
@@ -33,9 +34,23 @@ const middlewareFactory = (schema, getValidator, getValidationData, path) => {
   }
 }
 
+const optionsWithOpenApiFormats = (options) => {
+  const formats = options.formats ? [...options.formats] : []
 
-const OpenApiValidator = async (swaggerPath, options) => {
-  const schema = await apiSchemaBuilder.buildSchema(swaggerPath, options)
+  /**
+   * Some OpenAPI-specific Formats are not supported in the ajv and have be added manually.
+   * This adds support for:
+   * - integer: "int32", "int64"
+   */
+  formats.push({ name: 'int32', pattern: { type: 'number', validate: validators.int32 } })
+  formats.push({ name: 'int64', pattern: { type: 'number', validate: validators.int64 } })
+
+  return { ...options, formats }
+}
+
+const OpenApiValidator = async (swaggerPath, options = {}) => {
+  const optionsIncludingOpenApiFormats = optionsWithOpenApiFormats(options)
+  const schema = await apiSchemaBuilder.buildSchema(swaggerPath, optionsIncludingOpenApiFormats)
 
   const getBodyValidationMiddleware = path =>
     middlewareFactory(
