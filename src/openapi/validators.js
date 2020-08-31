@@ -17,7 +17,21 @@ function int32(value) {
 function int64(value) {
   return Number.isInteger(value) && value >= RANGES.int64.min && value <= RANGES.int64.max
 }
+
+/**
+ * Check that the data is float
+ * @param {number} data
+ * @returns {boolean}
+ */
+function float(data) {
+  return (
+    RANGES.float.max.greaterThanOrEqualTo(data)
+      && RANGES.float.min.lessThanOrEqualTo(data)
+  )
+}
+
 export default {
   int32,
   int64,
+  float,
 }

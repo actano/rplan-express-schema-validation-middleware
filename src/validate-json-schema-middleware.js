@@ -40,10 +40,11 @@ const optionsWithOpenApiFormats = (options) => {
   /**
    * Some OpenAPI-specific Formats are not supported in the ajv and have be added manually.
    * This adds support for:
-   * - integer: "int32", "int64"
+   * - integer: "int32", "int64", "float"
    */
   formats.push({ name: 'int32', pattern: { type: 'number', validate: validators.int32 } })
   formats.push({ name: 'int64', pattern: { type: 'number', validate: validators.int64 } })
+  formats.push({ name: 'float', pattern: { type: 'number', validate: validators.float } })
 
   return { ...options, formats }
 }
