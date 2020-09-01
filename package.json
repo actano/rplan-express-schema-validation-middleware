@@ -1,6 +1,6 @@
 {
   "name": "@rplan/express-schema-validation-middleware",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "author": "Actano GmbH (https://rplan.com/)",
   "license": "MIT",
   "main": "lib/index.js",
