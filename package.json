@@ -49,6 +49,6 @@
     "api-schema-builder": "1.0.9",
     "chai": "^4.2.0",
     "http-status-codes": "^1.3.2",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.19"
   }
 }
