@@ -121,7 +121,7 @@ paths:
                     type: integer
                     format: int64
 
-  /route-with-float-response-body:
+  /route-with-number-response-body:
     get:
       responses:
         200:
@@ -132,10 +132,15 @@ paths:
                 type: object
                 additionalProperties: false
                 required:
+                  - number
                   - float
+                  - double
                 properties:
+                  number:
+                    type: number
                   float:
                     type: number
                     format: float
-                    minimum: 0.0
-                    maximum: 2.1
+                  double:
+                    type: number
+                    format: double

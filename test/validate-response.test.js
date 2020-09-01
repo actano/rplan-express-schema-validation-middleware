@@ -63,31 +63,18 @@ describe('validate-json-schema-middleware', () => {
       await validateResponse('test/private.yaml', myRoute, 'get', 200, res)
     })
 
-    it('should allow float format', async () => {
-      const myRoute = '/route-with-float-response-body'
+    it('should allow number format float and double', async () => {
+      const myRoute = '/route-with-number-response-body'
       await runRoute(myRoute, {
-        float: 1.9,
+        number: 2 ** 256,
+        float: 2 ** 127,
+        double: 2 ** 1023,
       })
 
       const res = await request(getTestUrl())
         .get(myRoute)
 
       await validateResponse('test/private.yaml', myRoute, 'get', 200, res)
-    })
-
-    it('should not allow float format with maximum out of range', async () => {
-      const myRoute = '/route-with-float-response-body'
-      await runRoute(myRoute, {
-        float: 2.2,
-      })
-
-      const res = await request(getTestUrl())
-        .get(myRoute)
-      try{
-        await validateResponse('test/private.yaml', myRoute, 'get', 200, res)
-      } catch(e) {
-        expect(e.message).contain('maximum')
-      }
     })
   })
 })

@@ -6,7 +6,9 @@ import { RANGES } from './constants'
  * @returns {boolean}
  */
 function int32(value) {
-  return Number.isInteger(value) && value >= RANGES.int32.min && value <= RANGES.int32.max
+  return Number.isInteger(value)
+    && value >= RANGES.int32.min
+    && value <= RANGES.int32.max
 }
 
 /**
@@ -15,19 +17,30 @@ function int32(value) {
  * @returns {boolean}
  */
 function int64(value) {
-  return Number.isInteger(value) && value >= RANGES.int64.min && value <= RANGES.int64.max
+  return Number.isInteger(value)
+    && value >= RANGES.int64.min
+    && value <= RANGES.int64.max
 }
 
 /**
- * Check that the data is float
- * @param {number} data
+ * Check that the value is float
+ * @param {number} value
  * @returns {boolean}
  */
-function float(data) {
+function float(value) {
   return (
-    !Number.isNaN(Number.parseFloat(data))
-      && RANGES.float.max.greaterThanOrEqualTo(data)
-      && RANGES.float.min.lessThanOrEqualTo(data)
+    value >= RANGES.float.min && value <= RANGES.float.max
+  )
+}
+
+/**
+ * Check that the value is double
+ * @param {number} value
+ * @returns {boolean}
+ */
+function double(value) {
+  return (
+    value >= RANGES.double.min && value <= RANGES.double.max
   )
 }
 
@@ -35,4 +48,5 @@ export default {
   int32,
   int64,
   float,
+  double,
 }
