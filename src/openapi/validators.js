@@ -25,7 +25,8 @@ function int64(value) {
  */
 function float(data) {
   return (
-    RANGES.float.max.greaterThanOrEqualTo(data)
+    !Number.isNaN(Number.parseFloat(data))
+      && RANGES.float.max.greaterThanOrEqualTo(data)
       && RANGES.float.min.lessThanOrEqualTo(data)
   )
 }

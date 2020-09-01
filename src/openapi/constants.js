@@ -10,7 +10,7 @@ export const RANGES = {
     max: 9223372036854775807,
   },
   float: {
-    min: new Decimal(2).pow(128).negated(),
-    max: new Decimal(2).pow(128),
+    min: new Decimal(2).pow(128).sub(1).negated(),
+    max: new Decimal(2).pow(128).sub(1),
   },
 }
